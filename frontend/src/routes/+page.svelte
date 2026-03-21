@@ -5,6 +5,7 @@
   import { page } from '$app/state'
   import ky from '$lib/api/ky'
   import { Button, TextInput } from 'heliodor'
+  import { isHTTPError } from 'ky'
 
   const { username } = $derived(page.data)
 
@@ -26,7 +27,10 @@
       goto(resolve(`/room/${id}`)).catch(console.error)
       status = null
     } catch (e) {
-      status = e instanceof Error ? e.message : (e?.toString() ?? 'Failed to create room!')
+      if (roomId && isHTTPError(e) && e.response.status === 409 /* Room ID already exists! */) {
+        goto(resolve(`/room/${roomId}`)).catch(console.error)
+        status = null
+      } else status = e instanceof Error ? e.message : (e?.toString() ?? 'Failed to create room!')
     }
   }
 </script>
@@ -49,7 +53,7 @@
         autocomplete="off"
         placeholder="Enter custom name (optional)"
       />
-      <Button onclick={handleCreateRoom} disabled={status === ''}>Create room</Button>
+      <Button onclick={handleCreateRoom} disabled={status === ''}>Create/join room</Button>
     {:else}
       <a href={resolve('/login')}>
         <Button>Login / Sign Up</Button>
