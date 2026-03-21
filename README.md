@@ -10,7 +10,7 @@ If you want to use concinnity with your friends, visit [concinnity.retrixe.xyz](
 
 ## Quick Start
 
-- Prerequisites: You must have a PostgreSQL/MariaDB database setup, and Golang, Node.js and corepack are needed to build the application.
+- Prerequisites: You must have a PostgreSQL/MariaDB database setup, and Golang, Node.js and corepack are needed to build the application. `libavif` must be installed on the backend for encoding profile pictures.
 - To run the backend on a server:
   - Run `go build` in the `backend` folder to compile it.
   - Create a `config.json` in the same folder according to the section on [backend configuration](#backend).
