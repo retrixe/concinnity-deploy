@@ -12,7 +12,7 @@
     MenuItem,
     TextInput,
   } from 'heliodor'
-  import { CaretDown } from 'phosphor-svelte'
+  import { CaretDownIcon } from 'phosphor-svelte'
 
   interface Props {
     error: string | null
@@ -90,7 +90,7 @@
       secondary={{ onclick: handleOpenMenu }}
     >
       {#snippet primaryChild()}Select local file{/snippet}
-      {#snippet secondaryChild()}<CaretDown weight="bold" size="1rem" />{/snippet}
+      {#snippet secondaryChild()}<CaretDownIcon weight="bold" size="1rem" />{/snippet}
       <Menu open={menuOpen} onClose={handleOpenMenu}>
         <MenuItem onclick={handleOpenRemoteFileDialog}>Remote file (HTTP/S)</MenuItem>
       </Menu>

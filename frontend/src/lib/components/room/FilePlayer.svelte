@@ -3,7 +3,7 @@
   import ky from '$lib/api/ky'
   import { RoomType, type PlayerState, type RoomInfo } from '$lib/api/room'
   import { openFileOrFiles } from '$lib/utils/openFile'
-  import { CaretDown } from 'phosphor-svelte'
+  import { CaretDownIcon } from 'phosphor-svelte'
   import VideoPlayer from './VideoPlayer.svelte'
   import { Button, Dialog, DropdownButton, Menu, MenuItem, TextInput } from 'heliodor'
 
@@ -99,7 +99,7 @@
         secondary={{ onclick: () => (menuOpen = !menuOpen) }}
       >
         {#snippet primaryChild()}Select local file{/snippet}
-        {#snippet secondaryChild()}<CaretDown weight="bold" size="1rem" />{/snippet}
+        {#snippet secondaryChild()}<CaretDownIcon weight="bold" size="1rem" />{/snippet}
         <Menu open={menuOpen} onClose={() => (menuOpen = false)}>
           <MenuItem onclick={() => (remoteFileUrl = '')}>Play from remote URL</MenuItem>
           <MenuItem onclick={handleStop}>Stop playing this video</MenuItem>

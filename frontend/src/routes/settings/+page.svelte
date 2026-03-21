@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Box, Button, IconButton, Toast } from 'heliodor'
-  import { Check, Pencil, Trash, User, X, XCircle } from 'phosphor-svelte'
+  import { CheckIcon, PencilIcon, TrashIcon, UserIcon, XIcon, XCircleIcon } from 'phosphor-svelte'
   import { goto, invalidate } from '$app/navigation'
   import { resolve } from '$app/paths'
   import { page } from '$app/state'
@@ -78,18 +78,18 @@
       {#if typeof avatar === 'string'}
         <img src={`${PUBLIC_BACKEND_URL}/api/avatar/${avatar}`} alt="User Avatar" class="avatar" />
       {:else}
-        <User size="15rem" />
+        <UserIcon size="15rem" />
       {/if}
       <div class="profile-buttons">
         <IconButton onclick={handleChangeAvatar} disabled={!!avatarAbortController}>
-          <Pencil size="1.5rem" />
+          <PencilIcon size="1.5rem" />
         </IconButton>
         {#if avatar}
           <IconButton
             onclick={() => (currentDialog = 'clearAvatar')}
             disabled={!!avatarAbortController}
           >
-            <Trash color="var(--error-color)" size="1.5rem" />
+            <TrashIcon color="var(--error-color)" size="1.5rem" />
           </IconButton>
         {/if}
       </div>
@@ -158,14 +158,14 @@
   >
     {#snippet icon()}
       {#if toastMessage?.[0]}
-        <Check weight="bold" size="1.5rem" />
+        <CheckIcon weight="bold" size="1.5rem" />
       {:else}
-        <XCircle weight="bold" size="1.5rem" />
+        <XCircleIcon weight="bold" size="1.5rem" />
       {/if}
     {/snippet}
     {#snippet footer()}
       <IconButton onclick={handleDismissToast} aria-label="Close">
-        <X weight="thin" size="1.5rem" />
+        <XIcon weight="thin" size="1.5rem" />
       </IconButton>
     {/snippet}
   </Toast>

@@ -5,7 +5,7 @@
   // @ts-expect-error -- breaks `yarn preview` to import directly
   import { linkify } from 'remarkable/dist/cjs/linkify.js'
   import type { Plugin } from 'remarkable/lib'
-  import { User } from 'phosphor-svelte'
+  import { UserIcon } from 'phosphor-svelte'
   import ky from '$lib/api/ky'
   import type { ChatMessage, UserProfile } from '$lib/api/room'
   import userProfileCache from '$lib/state/userProfileCache.svelte'
@@ -129,7 +129,7 @@
               width="32"
             />
           {:else}
-            <User size={32} />
+            <UserIcon size={32} />
           {/if}
           <div>
             <h4>{getUsername(messageGroup.userId)} — {parseTimestamp(messageGroup.timestamp)}</h4>
