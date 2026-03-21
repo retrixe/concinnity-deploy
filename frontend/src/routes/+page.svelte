@@ -44,6 +44,7 @@
       <TextInput
         value={roomId}
         oninput={onRoomIdChange}
+        onkeypress={e => e.key === 'Enter' && handleCreateRoom()}
         autocapitalize="off"
         autocomplete="off"
         placeholder="Enter custom name (optional)"
