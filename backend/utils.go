@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
@@ -149,31 +150,46 @@ func DecodeAVIF(reader io.Reader) (image.Image, error) {
 }
 
 func EncodeAVIF(image image.Image, quality int) ([]byte, error) {
-	// Create a temporary file to encode the image to PNG
-	file, err := os.CreateTemp(os.TempDir(), "concinnity-*.png")
+	// Create a temporary file to encode the image to AVIF using avifenc
+	file, err := os.CreateTemp(os.TempDir(), "concinnity-*.avif")
 	if err != nil {
 		return nil, err
 	}
 	defer os.Remove(file.Name())
-	encoder := png.Encoder{CompressionLevel: png.NoCompression}
-	if err := encoder.Encode(file, image); err != nil {
-		return nil, err
-	} else if err := file.Close(); err != nil {
-		return nil, err
-	}
-
-	// Encode to AVIF using avifenc
-	defer os.Remove(file.Name() + ".avif")
+	// Note: --stdin was added with libavif 1.4.0, so we can avoid creating a temporary PNG file.
+	// Note: -a c:tune=iq is default with libavif 1.4.0 in certain cases
+	var cmd *exec.Cmd
 	if quality == 100 {
-		if err := exec.Command("avifenc", "-l", file.Name(), file.Name()+".avif").Run(); err != nil {
-			return nil, err
-		}
+		cmd = exec.Command("avifenc", "-y", "444", "-d", "10", "-a", "c:tune=iq", "-l", "--stdin", "--input-format", "png", file.Name())
 	} else {
-		if err := exec.Command("avifenc", "-q", strconv.Itoa(quality), file.Name(), file.Name()+".avif").Run(); err != nil {
-			return nil, err
-		}
+		cmd = exec.Command("avifenc", "-y", "444", "-d", "10", "-a", "c:tune=iq", "-q", strconv.Itoa(quality), "--stdin", "--input-format", "png", file.Name())
 	}
-	data, err := os.ReadFile(file.Name() + ".avif")
+	var b bytes.Buffer
+	cmd.Stdout = &b
+	cmd.Stderr = &b
+	writer, err := cmd.StdinPipe()
+	if err != nil {
+		return nil, err
+	}
+	if err := cmd.Start(); err != nil {
+		return nil, err
+	}
+	encoder := png.Encoder{CompressionLevel: png.NoCompression}
+	if err := encoder.Encode(writer, image); err != nil {
+		writer.Close()
+		cmd.Process.Kill()
+		cmd.Wait()
+		return nil, err
+	} else if err := writer.Close(); err != nil {
+		return nil, err
+	}
+	if err = cmd.Wait(); err != nil {
+		log.Printf("avifenc error: %v, output: %s", err, b.String())
+		return nil, err
+	} else {
+		//log.Printf("avifenc output: %s", b.String())
+	}
+	data, err := os.ReadFile(file.Name())
 	if err != nil {
 		return nil, err
 	}
