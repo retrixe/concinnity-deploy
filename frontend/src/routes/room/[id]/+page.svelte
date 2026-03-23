@@ -164,7 +164,7 @@
   // Reconnect if there's an error and the page is visible
   const isError = $derived(
     wsError &&
-      wsError !== 'You are not authenticated to access this resource!' &&
+      wsError !== 'You are not logged in! Please sign in to continue.' &&
       wsError !== 'Room not found!',
   ) // Error messages changing shouldn't affect this $effect, and some errors are not recoverable.
   $effect(() => {

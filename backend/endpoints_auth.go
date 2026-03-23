@@ -22,7 +22,7 @@ var ErrNotAuthenticated = errors.New("request not authenticated")
 func IsAuthenticatedHTTP(w http.ResponseWriter, r *http.Request) (*User, *Token) {
 	user, token, err := IsAuthenticated(GetTokenFromHTTP(r))
 	if errors.Is(err, ErrNotAuthenticated) {
-		http.Error(w, errorJson("You are not authenticated to access this resource!"),
+		http.Error(w, errorJson("You are not logged in! Please sign in to continue."),
 			http.StatusUnauthorized)
 	} else if err != nil {
 		handleInternalServerError(w, err)
@@ -140,14 +140,14 @@ func LoginEndpoint(w http.ResponseWriter, r *http.Request) {
 func LogoutEndpoint(w http.ResponseWriter, r *http.Request) {
 	token := GetTokenFromHTTP(r)
 	if token == "" {
-		http.Error(w, errorJson("You are not authenticated to access this resource!"),
+		http.Error(w, errorJson("You are not logged in! Please sign in to continue."),
 			http.StatusUnauthorized)
 		return
 	}
 	var userID uuid.UUID
 	err := deleteTokenStmt.QueryRow(token).Scan(&userID)
 	if errors.Is(err, sql.ErrNoRows) {
-		http.Error(w, errorJson("You are not authenticated to access this resource!"),
+		http.Error(w, errorJson("You are not logged in! Please sign in to continue."),
 			http.StatusUnauthorized)
 		return
 	} else if err != nil {

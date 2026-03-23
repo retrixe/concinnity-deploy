@@ -118,7 +118,7 @@ func JoinRoomEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	user, _, err := IsAuthenticated(authMessage.Token)
 	if errors.Is(err, ErrNotAuthenticated) {
-		wsError(c, "You are not authenticated to access this resource!", 4401)
+		wsError(c, "You are not logged in! Please sign in to continue.", 4401)
 		return
 	} else if err != nil {
 		wsInternalError(c, err)
@@ -210,7 +210,7 @@ func JoinRoomEndpoint(w http.ResponseWriter, r *http.Request) {
 		for msg := range writeChannel {
 			switch msg {
 			case WsInternalAuthDisconnect:
-				wsError(c, "You are not authenticated to access this resource!", 4401)
+				wsError(c, "You are not logged in! Please sign in to continue.", 4401)
 				return
 			case WsInternalClientReconnect:
 				silentlyDisconnect.Store(true) // Don't notify other clients of a disconnect.
